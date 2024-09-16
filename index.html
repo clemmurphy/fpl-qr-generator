@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>FPL QR Generator</title>
+  </head>
+  <body>
+    <div id="container">
+      <div id="instructions">
+        <h2 id="heading">Enter your invite code</h2>
+        <p>It should be 6 characters long, made up of letters and numbers.</p>
+      </div>
+      <input id="text" type="text" value="" /><br />
+      <button id="urlCopyBtn" disabled>Copy Join Link 📋</button>
+      <div id="qrcode"></div>
+      <script>
+        const qrcode = new QRCode('qrcode')
+
+        const elText = document.getElementById('text')
+        const urlCopyBtn = document.getElementById('urlCopyBtn')
+
+        function makeCode() {
+          if (!elText.value) {
+            elText.focus()
+            return
+          }
+
+          if (elText.value.length === 6) {
+            elText.style.backgroundColor = 'lightgreen'
+            qrcode.makeCode(
+              `https://fantasy.premierleague.com/leagues/auto-join/${elText.value}`
+            )
+            urlCopyBtn.removeAttribute('disabled')
+          } else {
+            qrcode.clear()
+            elText.style.backgroundColor = 'IndianRed'
+            if (!urlCopyBtn.hasAttribute('disabled')) {
+              urlCopyBtn.setAttribute('disabled')
+            }
+          }
+        }
+
+        makeCode()
+
+        elText.addEventListener('blur', makeCode)
+        elText.addEventListener('keydown', (e) => {
+          if (e.keyCode === 13) {
+            makeCode()
+          }
+        })
+
+        urlCopyBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(
+            `https://fantasy.premierleague.com/leagues/auto-join/${elText.value}`
+          )
+          alert('Copied to clipboard!')
+        })
+      </script>
+      <!-- <details>
+        <summary>How to find your FPL league code</summary>
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/YGX-UDnVnUE?si=l1G6Ri7fr4zZBUbK"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </details> -->
+    </div>
+  </body>
+</html>
